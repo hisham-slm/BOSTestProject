@@ -1,0 +1,56 @@
+---
+import LoginForm from "../components/LoginForm.astro";
+import Nav from "./nav.astro";
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<style>
+    main {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+<body>
+    <Nav />
+    <main>
+        <LoginForm />
+    </main>
+    <script>
+        document.querySelector('form').addEventListener('submit', async function(event) {
+            event.preventDefault()
+
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries())
+
+            try{
+                const response = await fetch(event.target.action, {
+                    method : 'POST',
+                    credentials : "include",
+                    headers : { 'Content-Type': 'application/json' },
+                    body : JSON.stringify(data)
+                })
+                console.log(response)
+                if (response.ok){
+                    const result = await response.json()
+                    window.location.href = '/products'  
+                }
+                else{
+                    const result = await Response.json()
+                    document.getElementById('error-message').innerText = result.message
+                }
+            }catch (error){
+                console.error(error)
+                document.getElementById('error-message').innerText = "Something went wrong in the backend"
+            }
+        })
+    </script>
+</body>
+</html>
+    

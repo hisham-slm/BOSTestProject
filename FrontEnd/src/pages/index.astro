@@ -1,0 +1,99 @@
+---
+
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="Astro.generator" />
+    <title>Astro</title>
+    <style>
+        :root {
+            --bg-color: #FFFBF5;
+            --border-color-light: #F7EFE5;
+            --border-color-dark: #C3ACD0;
+            --font-color: #7743DB;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .top {
+            display: flex;
+            flex-direction: column;
+			gap: 50px;
+            align-items: center;
+            background-color: var(--border-color-light);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #title {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #logo {
+            width: 50px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: var(--font-color);
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .actions {
+            margin-top: 20px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			padding: 10%;
+        }
+
+        button {
+            background-color: var(--font-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #5c2f91;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <div id="title">
+            <img id="logo" src="src/assets/preview.jpg" alt="logo">
+            <h1>E Commerce Website</h1>
+        </div>
+	</div>
+	<div class="actions">
+		<button><a style="text-decoration: none; color:white;" href="/login">Login</a></button>
+		<button><a style="text-decoration: none; color:white;" href="/register">Register</a></button>
+
+
+	</div>
+</body>
+</html>
+

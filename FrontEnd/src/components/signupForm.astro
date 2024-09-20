@@ -1,0 +1,82 @@
+---
+const { action } = Astro.props;
+---
+
+<form class="login" action={action} method="POST">
+    <h3>Sign Up</h3>
+    <input type="text" name="username" placeholder="Username" required />
+    <input type="email" name="email" placeholder="Email" required />
+    <input type="password" name="password" placeholder="Password" required />
+    <input type="password" name="password_confirmation" placeholder="Confirm Password" required />
+    <button type="submit">Sign Up</button>
+    <span class="error" id="error-message"></span>
+    <h5>Already have an account?</h5>
+    <a href="/login">Login</a>
+
+    <style>
+        :root {
+            --bg-color: #FFFBF5;
+            --btn-color: #7743db;
+            --border-color: #f7efe5;
+            --font-color: #c3acd0;
+            --font-black: #000;
+        }
+
+        .login {
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px;
+            box-shadow: 0 5px 30px rgba(86, 86, 130, 0.5);
+            border-radius: 8px;
+            background-color: var(--bg-color);
+            color: var(--btn-color);
+        }
+
+        .login h3, .login h5 {
+            margin: 0;
+        }
+
+        .login input {
+            width: 70%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid var(--btn-color);
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .login button {
+            background-color: var(--btn-color);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .login button:hover {
+            background-color: #fff;
+            color: var(--btn-color);
+            border: 1px solid var(--btn-color);
+        }
+
+        .login a {
+            color: var(--btn-color);
+            text-decoration: none;
+            margin-top: 10px;
+        }
+
+        .login a:hover {
+            text-decoration: underline;
+        }
+
+        #error {
+            visibility: hidden;
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</form>

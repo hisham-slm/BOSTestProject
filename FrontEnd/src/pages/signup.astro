@@ -1,0 +1,63 @@
+---
+import SignupForm from '../components/signupForm.astro';
+import Nav from './nav.astro';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="/styles/global.css" />
+    <style>
+        main{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <Nav />
+    <main>
+        <SignupForm action="http://localhost:3000/signup" />
+    </main>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+
+            if (data.password !== data.password_confirmation) {
+                document.getElementById('error-message').innerText = 'Passwords do not match!';
+                return;
+            }
+
+            try {
+                const response = await fetch(event.target.action, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json'} ,
+                    credentials : 'include',
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    // Handle successful response
+                    window.location.href = '/login'; // Redirect to login page or show success message
+                } else {
+                    const error = await response.json();
+                    document.getElementById('error-message').innerText = error.message;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('error-message').innerText = 'An error occurred. Please try again.';
+            }
+        });
+    </script>
+</body>
+</html>

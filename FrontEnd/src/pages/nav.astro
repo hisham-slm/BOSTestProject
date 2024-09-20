@@ -1,0 +1,55 @@
+<style>
+    .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--bg-color);
+            padding: 10px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid var(--border-color);
+            width: 100%; /* Make nav full width */
+            position: fixed; /* Fixed position */
+            top: 0;
+            left: 0;
+        }
+
+        .nav #title {
+            margin: 0;
+            color: var(--font-black);
+            font-size: 1.5rem;
+        }
+
+        .nav .left {
+            display: flex;
+            align-items: left;
+            gap: 10px;
+        }
+
+        .nav img {
+            width: 50px; 
+            height: auto;
+        }
+
+        .nav button {
+            background-color: var(--btn-color);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .nav button:hover {
+            background-color: #fff;
+            color: var(--btn-color);
+            border: 1px solid var(--btn-color);
+        }
+</style>
+<div class="nav">
+    <div class="left">
+        <img src="src/assets/preview.jpg" alt="Logo" />
+        <h2 id="title">E-Commerce Company</h2>
+    </div>
+    <button><a style="text-decoration: none; color:white;" href="/register">Register</a></button>
+</div>
