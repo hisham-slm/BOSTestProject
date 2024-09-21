@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt')
 const Admin = require('../models/admin');
 const mongoose = require('mongoose')
 const authenicateAdmin = require('../middlewares/authenticateAdmin');
+const User = require('../models/user')
 
 mongoose.connect("mongodb://localhost/bosTest")
     .then(() => console.log('Connected to the database'))
@@ -56,6 +57,28 @@ router.post('/login', async (req, res) => {
         } catch (error) {
             res.status(500).json({ message: "Something went wrong in the backend" })
         }
+    }
+})
+
+router.get('/cart_items', authenicateAdmin, async (req, res) => {
+    try{
+        const users = await User.find({}).select('username email cart').populate('cart.product')
+        console.log(users)
+        const userWithCarts = users.map(user => ({
+            username : user.username,
+            email : user.email,
+            cartItems : user.cart.map((item) => ({
+                productId : item.product._id,
+                productName : item.product.title,
+                price : item.product.price,
+                quantity : item.quantity
+            }))
+        }))
+
+        res.status(200).json({cartItems : userWithCarts})
+    }catch (error){
+        console.log(error)
+        res.status(500).json({message : "Something went wrong in the backed"})
     }
 })
 

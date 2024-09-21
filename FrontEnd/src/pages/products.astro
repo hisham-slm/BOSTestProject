@@ -1,4 +1,5 @@
 ---
 import  ProductList  from '../components/ProductList.astro'
+let  addToCart
 ---
-<ProductList />
+<ProductList addToCart={addToCart} client:load />

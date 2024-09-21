@@ -1,5 +1,6 @@
 ---
-
+// import { getCookie } from "../utils/cookieUtils";
+const { addToCart } = Astro.props;
 ---
 
 <div id="product-container" class="product-list">
@@ -9,6 +10,8 @@
 </div>
 
 <script>
+    const api = import.meta.env.PUBLIC_API;
+
     const getCookie = (name) => {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
@@ -16,13 +19,19 @@
             return parts.pop().split(";").shift();
         }
     };
-
     const makeRequest = async () => {
+        const getCookie = (name) => {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) {
+                return parts.pop().split(";").shift();
+            }
+        };
         const cookie = getCookie("access_token");
 
         try {
             const response = await fetch(
-                "http://localhost:3000/customer/products",
+                api+"/customer/products",
                 {
                     method: "GET",
                     headers: {
@@ -65,24 +74,60 @@
             container.innerHTML = products
                 .map(
                     (product) => `
-                    <a>
+                   <a>
                         <div class="product" id="${product._id}">
                             <img src="${product.image}" alt="Product Image">
                             <h4>${product.title}</h4>
                             <p>Price: ${product.price}</p>
                             <button>Buy</button> 
-                            <button>Add to Cart</button>
+                            <button class="add-to-cart" data-id="${product._id}">Add to Cart</button>
                         </div>
-                    </a>
+                    </a> 
 
             `,
                 )
                 .join("");
+
+            const buttons = document.querySelectorAll(".add-to-cart");
+            buttons.forEach((button) => {
+                button.addEventListener("click", () => {
+                    const productId = button.getAttribute("data-id");
+                    addToCart(productId);
+                });
+            });
         }
     };
 
-    // Call makeRequest when the DOM is fully loaded
     document.addEventListener("DOMContentLoaded", makeRequest);
+
+    async function addToCart(productId: string) {
+        const cookie = getCookie("access_token");
+        const data = {
+            product_id: productId,
+            quantity: 1,
+        };
+        try {
+            const response = await fetch(api + "/customer/add_to_cart", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                    Cookie: `access_token=${cookie}`,
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP Error status : ${response.status}`);
+            } else {
+                const result = await response.json();
+                alert("Item added to the cart");
+                console.log(result);
+            }
+        } catch (error) {
+            console.error("Error is ", error);
+        }
+    }
 </script>
 
 <style>

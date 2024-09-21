@@ -14,7 +14,7 @@ async function authenticateToken(req, res, next) {
             return res.status(403).json({ message: "Forbidden: Invalid token" });
         }
         console.log('Token verified successfully for user:', decoded.username);
-        req.user = decoded;
+        req.username = decoded.username;
         next();
     });
 }

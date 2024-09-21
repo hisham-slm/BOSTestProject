@@ -15,6 +15,7 @@ const authenicateAdmin = async function (req, res, next) {
         }
 
         console.log('token succesfully verified')
+        req.username = decoded.username
         next()
     })
 }
