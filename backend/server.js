@@ -8,6 +8,13 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const Customer = require('./routes/customer');
 const Admin = require('./routes/admin');
+const socketAdminAuth = require('./middlewares/socketAdminAuth')
+
+const http = require('http')
+const server = http.createServer(app)
+const { initSocket } = require('./socket')
+
+initSocket(server)
 
 // Middleware
 app.use(express.json());
@@ -31,6 +38,8 @@ const User = require('./models/user');
 
 
 // Routes
+
+
 app.get('/', (req, res) => {
     res.send('You are at the home page');
 });
@@ -92,9 +101,8 @@ app.post('/login', async (req, res) => {
     }
 });
 
-
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+server.listen(3000, () => {
+    console.log('Server is listening on port 3000');
 });
+
+module.exports = { app } 

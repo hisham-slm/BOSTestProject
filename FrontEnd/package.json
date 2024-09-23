@@ -18,6 +18,10 @@
     "dotenv": "^16.4.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "socket.io": "^4.8.0",
     "typescript": "^5.5.4"
+  },
+  "devDependencies": {
+    "@types/socket.io-client": "^3.0.0"
   }
 }

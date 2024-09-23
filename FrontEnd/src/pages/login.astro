@@ -42,7 +42,7 @@ import Nav from "./nav.astro";
                     window.location.href = '/products'  
                 }
                 else{
-                    const result = await Response.json()
+                    const result = await response.json()
                     document.getElementById('error-message').innerText = result.message
                 }
             }catch (error){

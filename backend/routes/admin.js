@@ -1,18 +1,11 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
-const cookie_parser = require('cookie-parser');
 const bcrypt = require('bcrypt')
 const Admin = require('../models/admin');
-const mongoose = require('mongoose')
 const authenicateAdmin = require('../middlewares/authenticateAdmin');
+const socketAdminAuth = require('../middlewares/socketAdminAuth')
 const User = require('../models/user')
-
-mongoose.connect("mongodb://localhost/bosTest")
-    .then(() => console.log('Connected to the database'))
-    .catch((error) => console.error('Database connection error:', error));
-
-
 router.use(express.json())
 
 router.get('/', async (req, res) => {
@@ -28,7 +21,7 @@ router.post('/gen_password', authenicateAdmin, async (req, res) => {
 })
 
 router.post('/login', async (req, res) => {
-    const adminName = req.body.adminName;
+    const adminName = req.body.admin_name;
     const password = req.body.password;
 
     const admin = await Admin.findOne({ admin: adminName })
@@ -61,24 +54,23 @@ router.post('/login', async (req, res) => {
 })
 
 router.get('/cart_items', authenicateAdmin, async (req, res) => {
-    try{
+    try {
         const users = await User.find({}).select('username email cart').populate('cart.product')
-        console.log(users)
         const userWithCarts = users.map(user => ({
-            username : user.username,
-            email : user.email,
-            cartItems : user.cart.map((item) => ({
-                productId : item.product._id,
-                productName : item.product.title,
-                price : item.product.price,
-                quantity : item.quantity
+            username: user.username,
+            email: user.email,
+            cartItems: user.cart.map((item) => ({
+                productId: item.product._id,
+                productName: item.product.title,
+                price: item.product.price,
+                quantity: item.quantity
             }))
         }))
 
-        res.status(200).json({cartItems : userWithCarts})
-    }catch (error){
+        res.status(200).json({ cartItems: userWithCarts })
+    } catch (error) {
         console.log(error)
-        res.status(500).json({message : "Something went wrong in the backed"})
+        res.status(500).json({ message: "Something went wrong in the backed" })
     }
 })
 
