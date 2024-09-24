@@ -1,3 +1,4 @@
+// creating database model for admin
 const mongoose = require('mongoose')
 
 const AdminSchema = new mongoose.Schema({

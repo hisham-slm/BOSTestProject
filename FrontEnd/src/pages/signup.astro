@@ -29,15 +29,18 @@ import Nav from './nav.astro';
         document.querySelector('form').addEventListener('submit', async function(event) {
             event.preventDefault();
 
+            // collecting the entered data and appending the to the form data
             const formData = new FormData(event.target);
             const data = Object.fromEntries(formData.entries());
 
+            // crossing checking the entered passwords
             if (data.password !== data.password_confirmation) {
                 document.getElementById('error-message').innerText = 'Passwords do not match!';
                 return;
             }
 
             try {
+                // fetching the backend and sending the formdata
                 const response = await fetch(event.target.action, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json'} ,
@@ -45,6 +48,7 @@ import Nav from './nav.astro';
                     body: JSON.stringify(data)
                 });
 
+                // if ok redirecting the user to the login page
                 if (response.ok) {
                     const result = await response.json();
                     // Handle successful response

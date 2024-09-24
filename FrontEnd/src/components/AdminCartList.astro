@@ -1,7 +1,7 @@
 ---
 
 ---
-
+<!-- initing the page with loaders  -->
 <div id="product-container" class="product-list">
     <div class="no-products">
         <h3>Loading products...</h3>
@@ -9,7 +9,6 @@
 </div>
 
 <style>
-    /* Container for the entire product list */
     #product-container {
         display: flex;
         flex-direction: column;
@@ -19,7 +18,6 @@
         margin: 0 auto;
     }
 
-    /* Each user's container */
     #each-user {
         background-color: #f9f9f9;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -30,27 +28,23 @@
             box-shadow 0.3s ease;
     }
 
-    /* Hover effect for each user card */
     #each-user:hover {
         transform: translateY(-5px);
         box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     }
 
-    /* Username styling */
     #each-user h4 {
         font-size: 1.5rem;
         color: #333;
         margin-bottom: 10px;
     }
 
-    /* Product list styling */
     #each-user ul {
         list-style: none;
         padding-left: 0;
         margin: 0;
     }
 
-    /* Each product item */
     #each-user li {
         background-color: #fff;
         border-radius: 5px;
@@ -62,21 +56,18 @@
         align-items: center;
     }
 
-    /* Styling for individual product info */
     #each-user li span {
         display: block;
         font-size: 1rem;
         color: #555;
     }
 
-    /* No products found message styling */
     .no-products {
         text-align: center;
         color: #888;
         font-size: 1.2rem;
     }
 
-    /* Responsive design */
     @media (max-width: 768px) {
         #product-container {
             max-width: 100%;
@@ -96,18 +87,18 @@
         }
     }
 </style>
+
+<!-- connecting to the backend for the websocket protocol -->
 <script is:inline src="http://localhost:3000/socket.io/socket.io.js"></script>
 <script>
     import { io } from "socket.io-client";
-    import type { tokenToString } from "typescript";
     const api = import.meta.env.PUBLIC_API;
     const domain = import.meta.env.DOMAIN;
 
+    //collecting the cookie data with the given name 
     const getCookie = (name) => {
         const cookies = document.cookie.split("; ");
-        console.log(name,cookies)
         for (let cookie of cookies) {
-            console.log('cookie in for is', cookie)
             const [cookieName, cookieValue] = cookie.split("=");
             if (cookieName === name) {
                 return cookieValue;
@@ -116,8 +107,11 @@
         return null;
     };
 
+    // creating function for websocket protocol
     function socketRequest() {
         const adminAccessToken = getCookie("admin_access_token");
+
+        //creating headers for the soket request
         const socket = io("http://localhost:3000", {
             transports: ["websocket"],
             extraHeaders: {
@@ -126,19 +120,23 @@
             withCredentials: true,
         });
 
+        // emitting request-cart-data to collecting the cart data 
         socket.emit("request-cart-data");
 
+        // coolecting datas from the cart
         socket.on("cart-data", (data) => {
             const cartItems = data.cartItems;
             console.log("data recieved");
             listCartItems(cartItems);
         });
 
+        // collecting the update data which is triggered my the cart_update in the backend 
         socket.on("cart-update", () => {
             console.log("cart has been updated");
             socket.emit("request-cart-data");
         });
 
+        // redirecting the admin if the cookie is not present or not valid 
         socket.on("connect_error", (error) => {
             console.error("Connection Error:", error.message);
             if (error.message === "Authentication error") {
@@ -150,6 +148,7 @@
         });
     }
 
+    // listing the cart items and updating the page with the datas
     function listCartItems(list) {
         const container = document.getElementById("product-container");
 

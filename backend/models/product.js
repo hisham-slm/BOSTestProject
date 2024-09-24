@@ -1,3 +1,4 @@
+// creating database model for products
 const mongoose = require('mongoose')
 
 const ProductSchema = mongoose.Schema({

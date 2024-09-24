@@ -1,22 +1,26 @@
+// collecting requirements from .env
 require('dotenv').config();
+
+//initializing express app 
 const express = require("express");
-const mongoose = require("mongoose");
+const app = express();
+
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-const app = express();
+
+//importing data models
 const Customer = require('./routes/customer');
 const Admin = require('./routes/admin');
-const socketAdminAuth = require('./middlewares/socketAdminAuth')
 
+//initializing server for websocket protocol
 const http = require('http')
 const server = http.createServer(app)
 const { initSocket } = require('./socket')
-
 initSocket(server)
 
-// Middleware
+// Middlewares
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
@@ -27,19 +31,21 @@ app.use(cors({
 }));
 
 
-// Database connection
-mongoose.connect("mongodb://localhost/bosTest")
-.then(() => console.log('Connected to the database'))
-.catch((error) => console.error('Database connection error:', error));
+//initing mongodb database and connecting it with application
+const mongoose = require("mongoose");
 
-app.use('/customer',Customer)
+mongoose.connect("mongodb://localhost/bosTest")
+    .then(() => console.log('Connected to the database'))
+    .catch((error) => console.error('Database connection error:', error));
+
+//connecting routes 
+app.use('/customer', Customer)
 app.use('/admin', Admin)
+
+//importing User model from ./models.user
 const User = require('./models/user');
 
-
 // Routes
-
-
 app.get('/', (req, res) => {
     res.send('You are at the home page');
 });
@@ -82,15 +88,15 @@ app.post('/login', async (req, res) => {
             return res.status(401).json({ message: "Incorrect password" });
         }
 
-        const accessToken = jwt.sign({ username: user.username, user_type : "customer" }, process.env.ACCESS_TOKEN, { expiresIn: '10m' });
-        const refreshToken = jwt.sign({ username: user.username , user_type : "customer"}, process.env.REFRESH_TOKEN);
+        const accessToken = jwt.sign({ username: user.username, user_type: "customer" }, process.env.ACCESS_TOKEN, { expiresIn: '10m' });
+        const refreshToken = jwt.sign({ username: user.username, user_type: "customer" }, process.env.REFRESH_TOKEN);
 
         await User.updateOne({ username }, { $set: { refreshToken } });
 
         res.cookie('access_token', accessToken, {
             httpOnly: true,
             sameSite: 'None',
-            secure : true,
+            secure: true,
         });
 
         console.log('Login successful. Cookie set:', res.getHeader('Set-Cookie'));
@@ -104,5 +110,3 @@ app.post('/login', async (req, res) => {
 server.listen(3000, () => {
     console.log('Server is listening on port 3000');
 });
-
-module.exports = { app } 

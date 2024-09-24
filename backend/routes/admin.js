@@ -1,18 +1,26 @@
+//intializing the routes
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const router = express.Router();
-const bcrypt = require('bcrypt')
-const Admin = require('../models/admin');
-const authenicateAdmin = require('../middlewares/authenticateAdmin');
-const socketAdminAuth = require('../middlewares/socketAdminAuth')
-const User = require('../models/user')
 router.use(express.json())
 
+//importing wanted libraries
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt')
+
+//importing wanted models 
+const Admin = require('../models/admin');
+const User = require('../models/user')
+
+//importing authentication middlwares
+const authenicateAdmin = require('../middlewares/authenticateAdmin');
+
+//routes
 router.get('/', async (req, res) => {
     res.status(200).json({ message: 'you are at now admin side' })
 })
 
 router.post('/gen_password', authenicateAdmin, async (req, res) => {
+    //generating password for the creating admin with the given password by hashing and salting 
     const password = req.body.password;
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -24,20 +32,26 @@ router.post('/login', async (req, res) => {
     const adminName = req.body.admin_name;
     const password = req.body.password;
 
+    // finding the admin with given parameters
     const admin = await Admin.findOne({ admin: adminName })
     if (!admin) {
         res.status(401).json({ message: "You are not Admin" });
     } else {
         try {
+            //comparing and taking required actions for the future admin authentication
             const passwordComparison = await bcrypt.compare(password, admin.password)
-            console.log(passwordComparison)
+
             if (!passwordComparison) {
                 res.status(401).json({ message: "Wrong Password" })
             } else {
+                //creating cookies for the admin 
                 const admin_access_token = jwt.sign({ admin_name: admin.admin, user_type: 'admin' }, process.env.ADMIN_ACCESS_TOKEN, { expiresIn: '10m' })
                 const admin_refresh_token = jwt.sign({ admin_name: admin.admin, user_type: 'admin' }, process.env.ADMIN_REFRESH_TOKEN)
+
+                //updating admin refresh token 
                 await Admin.updateOne({ admin_name: admin.admin }, { $set: { admin_refresh_token: admin_refresh_token } })
 
+                // sending cookie for the admin 
                 res.cookie(
                     'admin_access_token', admin_access_token, {
                     httpOnly: true,
@@ -56,6 +70,8 @@ router.post('/login', async (req, res) => {
 router.get('/cart_items', authenicateAdmin, async (req, res) => {
     try {
         const users = await User.find({}).select('username email cart').populate('cart.product')
+        
+        //collecting and structuring the data 
         const userWithCarts = users.map(user => ({
             username: user.username,
             email: user.email,
@@ -74,4 +90,5 @@ router.get('/cart_items', authenicateAdmin, async (req, res) => {
     }
 })
 
+//exporting router to connect with the application
 module.exports = router

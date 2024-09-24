@@ -1,3 +1,4 @@
+// creating middleware for collecting cookie and verifying user
 const jwt = require('jsonwebtoken');
 
 async function authenticateToken(req, res, next) {

@@ -3,6 +3,7 @@ const { action } = Astro.props;
 const api = import.meta.env.PUBLIC_API;
 ---
 
+<!-- creating the form for admin login purpose  -->
 <form id="login-form" action=`${api}/admin/login` method="POST" class="login-form">
     <h2>Login</h2>
     <input type="text" name="admin_name" placeholder="Username" required />

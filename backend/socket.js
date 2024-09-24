@@ -1,9 +1,12 @@
+// creating server for websocket protocol
 const { Server } = require('socket.io');
 const User = require('./models/user')
 const socketAdminAuth = require('./middlewares/socketAdminAuth')
 let io;
 
+// creating funtion for initializing the websocket server (which is called in server.js)
 const initSocket = (server) => {
+    // creating server with specifying the cors access
     io = new Server(server, {
         cors: {
             origin: 'http://localhost/4321',
@@ -12,11 +15,13 @@ const initSocket = (server) => {
 
         }
     })
+    // authenticating admin for websocket protocol
     io.use(socketAdminAuth)
 
     io.on('connection', (socket) => {
         console.log("Admin connected")
 
+        // sending the data
         socket.on('request-cart-data', async () => {
             console.log('data requested by socket id', socket.id)
             try {
@@ -35,6 +40,7 @@ const initSocket = (server) => {
                     }))
                 }));
 
+                // sending the updated data while cart-data is triggerred
                 socket.emit('cart-data', { cartItems: userWithCarts });
             } catch (error) {
                 console.error(error);
@@ -48,15 +54,9 @@ const initSocket = (server) => {
     })
 }
 
-const getIO = () => {
-    if (!io) {
-        throw new Error('Socket.io not initialized')
-    }
-    return io;
-}
-
 const emitCartUpdate = () => {
     io.emit('cart-update')
 }
 
+// exporting functions for using it in the required files
 module.exports = { initSocket, emitCartUpdate }

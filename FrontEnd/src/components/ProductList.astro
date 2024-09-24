@@ -1,8 +1,7 @@
 ---
-// import { getCookie } from "../utils/cookieUtils";
-// const { addToCart } = Astro.props;
 ---
 
+<!-- creating the page to list out the products -->
 <div id="product-container" class="product-list">
     <div class="no-products">
         <h3>Loading products...</h3>
@@ -12,6 +11,8 @@
 <script>
     const api = import.meta.env.PUBLIC_API;
     const domain = import.meta.env.DOMAIN;
+
+    // creating the function for getting the cookie value with the given name
     const getCookie = (name) => {
         const cookies = document.cookie.split("; ");
         for (let cookie of cookies) {
@@ -23,10 +24,12 @@
         return null; // Return null if the cookie is not found
     };
 
+    // creating a function to fetch the products data
     const makeRequest = async () => {
         const cookie = getCookie("access_token");
 
         try {
+            // fetching the api and collecting the data with headers which cookie is passed 
             const response = await fetch(api + "/customer/products", {
                 method: "GET",
                 headers: {
@@ -39,6 +42,7 @@
             if (!response.ok) {
                 console.log("response is not fine", response);
                 console.log(response.status);
+                // if there is no user token redirecting to the login page
                 if (response.status == 403) {
                     window.location.href = "http://localhost:4321/login";
                     alert("please login");
@@ -48,6 +52,7 @@
 
             const data = await response.json();
             const products = data.products;
+        // updating the recieved data into a html format
             updateProductList(products);
         } catch (error) {
             console.error("Error fetching products:", error);
@@ -55,6 +60,7 @@
         }
     };
 
+    // creating a function to update the recieved data to a html format
     const updateProductList = (products) => {
         const container = document.getElementById("product-container");
 
@@ -94,6 +100,7 @@
 
     document.addEventListener("DOMContentLoaded", makeRequest);
 
+    // creating a function to let user to add products into the cart
     async function addToCart(productId: string) {
         const cookie = getCookie("access_token");
         const data = {
@@ -101,6 +108,7 @@
             quantity: 1,
         };
         try {
+            // fetching the api and sending the product data 
             const response = await fetch(api + "/customer/add_to_cart", {
                 method: "POST",
                 credentials: "include",
@@ -125,7 +133,6 @@
 </script>
 
 <style>
-    /* Container for product list */
     #product-container {
         display: flex;
         flex-wrap: wrap;
@@ -134,7 +141,6 @@
         padding: 20px;
     }
 
-    /* Individual product box */
     .product {
         width: 250px;
         padding: 15px;
@@ -147,7 +153,6 @@
             box-shadow 0.3s ease;
     }
 
-    /* Product image */
     .product img {
         width: 100%;
         height: auto;
@@ -155,21 +160,18 @@
         object-fit: cover;
     }
 
-    /* Product title */
     .product h4 {
         font-size: 1.2rem;
         margin: 10px 0;
         color: #333;
     }
 
-    /* Product price */
     .product p {
         font-size: 1rem;
         color: #555;
         margin-bottom: 15px;
     }
 
-    /* Buttons inside the product box */
     .product button {
         padding: 10px 20px;
         background-color: #28a745;
@@ -181,7 +183,6 @@
         transition: background-color 0.3s ease;
     }
 
-    /* Hover effects for product box and buttons */
     .product:hover {
         transform: translateY(-5px);
         box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
@@ -191,7 +192,6 @@
         background-color: #218838;
     }
 
-    /* Responsive adjustments for smaller screens */
     @media (max-width: 768px) {
         #product-container {
             justify-content: space-around;

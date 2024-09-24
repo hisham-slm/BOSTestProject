@@ -1,3 +1,4 @@
+// creating special middleware for authenticating admin for web socket protocol
 const jwt = require('jsonwebtoken')
 const socketAdminAuth = (socket, next) => {
     const token = socket.handshake.headers.cookie.split("=")[1]

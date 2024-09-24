@@ -1,3 +1,4 @@
+// creating database model for user
 const mongoose = require('mongoose')
 
 const UserSchema = new mongoose.Schema({
