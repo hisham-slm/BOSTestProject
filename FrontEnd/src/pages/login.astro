@@ -2,58 +2,63 @@
 import LoginForm from "../components/LoginForm.astro";
 import Nav from "./nav.astro";
 ---
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-</head>
-<style>
-    main {
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-</style>
-<body>
-    <Nav />
-    <main>
-        <LoginForm />
-    </main>
-    <script>
-        document.querySelector('form').addEventListener('submit', async function(event) {
-            event.preventDefault()
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="src/styles/login.css" />
+        <link rel="stylesheet" href="src/styles/global.css" />
+        <title>Login</title>
+    </head>
+    <style>
+        main {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+    <body>
+        <Nav />
+        <main>
+            <LoginForm />
+        </main>
+        <script>
+            document
+                .querySelector("form")
+                .addEventListener("submit", async function (event) {
+                    event.preventDefault();
 
-            // collecting the entered data into a formdata
-            const formData = new FormData(event.target);
-            const data = Object.fromEntries(formData.entries())
+                    // collecting the entered data into a formdata
+                    const formData = new FormData(event.target);
+                    const data = Object.fromEntries(formData.entries());
 
-            try{
-                // fetching the api and sending the formdata with post method
-                const response = await fetch(event.target.action, {
-                    method : 'POST',
-                    credentials : "include",
-                    headers : { 'Content-Type': 'application/json' },
-                    body : JSON.stringify(data)
-                })
-                console.log(response)
-                // if the user is autheticated, redirecting to the products page
-                if (response.ok){
-                    const result = await response.json()
-                    window.location.href = '/products'  
-                }
-                else{
-                    const result = await response.json()
-                    document.getElementById('error-message').innerText = result.message
-                }
-            }catch (error){
-                console.error(error)
-                document.getElementById('error-message').innerText = "Something went wrong in the backend"
-            }
-        })
-    </script>
-</body>
+                    try {
+                        // fetching the api and sending the formdata with post method
+                        const response = await fetch(event.target.action, {
+                            method: "POST",
+                            credentials: "include",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(data),
+                        });
+                        console.log(response);
+                        // if the user is autheticated, redirecting to the products page
+                        if (response.ok) {
+                            const result = await response.json();
+                            window.location.href = "/products";
+                        } else {
+                            const result = await response.json();
+                            document.getElementById("error-message").innerText =
+                                result.message;
+                        }
+                    } catch (error) {
+                        console.error(error);
+                        document.getElementById("error-message").innerText =
+                            "Something went wrong in the backend";
+                    }
+                });
+        </script>
+    </body>
 </html>
-    
