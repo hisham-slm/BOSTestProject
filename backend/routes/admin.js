@@ -54,7 +54,7 @@ router.post('/login', async (req, res) => {
                 // sending cookie for the admin 
                 res.cookie(
                     'admin_access_token', admin_access_token, {
-                    httpOnly: true,
+                    httpOnly: false,
                     sameSite: "None",
                     secure: true
                 }

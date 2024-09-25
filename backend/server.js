@@ -94,7 +94,7 @@ app.post('/login', async (req, res) => {
         await User.updateOne({ username }, { $set: { refreshToken } });
 
         res.cookie('access_token', accessToken, {
-            httpOnly: true,
+            httpOnly: false,
             sameSite: 'None',
             secure: true,
         });

@@ -97,9 +97,15 @@
 
     //collecting the cookie data with the given name 
     const getCookie = (name) => {
+        console.log("name is ",name)
         const cookies = document.cookie.split("; ");
+        console.log("cookies is", cookies )
         for (let cookie of cookies) {
-            const [cookieName, cookieValue] = cookie.split("=");
+            console.log('in for cookie of cookies')
+            console.log('cookie is ', cookie)
+            const cookieName = cookie.split('=')[0]
+            const cookieValue = cookie.split('=')[1]
+            console.log(cookieName, cookieValue)
             if (cookieName === name) {
                 return cookieValue;
             }
@@ -110,12 +116,14 @@
     // creating function for websocket protocol
     function socketRequest() {
         const adminAccessToken = getCookie("admin_access_token");
+        console.log("retuned value is ",adminAccessToken)
 
         //creating headers for the soket request
         const socket = io("http://localhost:3000", {
             transports: ["websocket"],
             extraHeaders: {
                 Authorization: `Bearer ${adminAccessToken}`, // Send token in headers
+                Cookie : adminAccessToken
             },
             withCredentials: true,
         });

@@ -27,6 +27,7 @@
     // creating a function to fetch the products data
     const makeRequest = async () => {
         const cookie = getCookie("access_token");
+        console.log(cookie)
 
         try {
             // fetching the api and collecting the data with headers which cookie is passed 
